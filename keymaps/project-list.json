@@ -1,7 +1,9 @@
 {
+  // `alt-p` reveals the list. Bare alt-<letter> is the tier for revealing a
+  // surface, one letter per surface, keyed to the package's own initial.
   "atom-workspace": {
-    "f10": "project-list:toggle",
-    "ctrl-f10": "project-list:edit"
+    "alt-p": "project-list:toggle",
+    "alt-shift-p": "project-list:edit"
   },
   ".project-list atom-text-editor[mini]": {
     "alt-enter": "project-list:open-in-this-window",
