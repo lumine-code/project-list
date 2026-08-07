@@ -8,7 +8,7 @@ Quick access and switching between projects.
 - **Directory scanning**: auto-discover subdirectories as projects with glob patterns.
 - **Glob paths**: wildcard patterns in `paths` expand to all matching directories at load time.
 - **Tags support**: organize and filter projects by tags; a `#tag` query targets tags explicitly.
-- **Multiple open modes**: open in a new window, swap, switch in the same window, or append to the current window.
+- **Multiple open modes**: open in a new window, open here restoring the project's own editors, or add to the current window.
 - **Performance cache**: the built list is cached and kept in sync across windows.
 
 ## Installation
@@ -25,16 +25,17 @@ Commands available in `atom-workspace`:
 
 Commands available in `.project-list`, all listed with their keybindings in the item-actions list (F12):
 
-- `project-list:open`: open the selected project in a new window,
-- `project-list:swap`: open the selected project in a new window and close the current one,
-- `project-list:switch`: switch the current window to the selected project,
-- `project-list:append`: append the selected project to the current window,
-- `project-list:paste`: insert the project paths into the active text editor,
-- `project-list:dev`: open the selected project in a new window in dev mode,
-- `project-list:safe`: open the selected project in a new window in safe mode,
-- `project-list:external`: open the project folders externally (via open-external),
-- `project-list:show`: show the project folders in the system file manager (via open-external),
+- `project-list:open-in-new-window`: open the selected project in a new window,
+- `project-list:open-in-this-window`: open the selected project here, restoring the editors it was last left with,
+- `project-list:add-to-project`: add the selected project's folders to the current window,
+- `project-list:insert-paths`: insert the project paths into the active text editor,
+- `project-list:open-in-dev-mode`: open the selected project in a new window in dev mode,
+- `project-list:open-in-safe-mode`: open the selected project in a new window in safe mode,
+- `project-list:open-external`: open the project folders externally (via open-external),
+- `project-list:show-in-folder`: show the project folders in the system file manager (via open-external),
 - `project-list:refresh`: rebuild the project list, skipping the cache.
+
+Opening in this window keeps the same renderer, so packages, themes and grammars stay loaded. The current project's editors are saved before the new project's are restored, unsaved changes included, so returning to a project finds it as you left it. Only the workspace center changes — a tree view, a terminal or any other dock keeps running. A project configured for `devMode` or `safeMode` still opens a window of its own, since neither can change in place.
 
 ## Configuration
 

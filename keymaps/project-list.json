@@ -4,14 +4,13 @@
     "ctrl-f10": "project-list:edit"
   },
   ".project-list atom-text-editor[mini]": {
-    "alt-enter": "project-list:swap",
-    "ctrl-enter": "project-list:switch",
-    "shift-enter": "project-list:append",
-    "alt-v": "project-list:paste",
-    "alt-d": "project-list:dev",
-    "alt-s": "project-list:safe",
-    "alt-f12": "project-list:external",
-    "ctrl-f12": "project-list:show",
+    "alt-enter": "project-list:open-in-this-window",
+    "shift-enter": "project-list:add-to-project",
+    "alt-v": "project-list:insert-paths",
+    "alt-d": "project-list:open-in-dev-mode",
+    "alt-s": "project-list:open-in-safe-mode",
+    "alt-f12": "project-list:open-external",
+    "ctrl-f12": "project-list:show-in-folder",
     "f5": "project-list:refresh"
   }
 }

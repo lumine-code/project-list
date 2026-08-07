@@ -17,12 +17,14 @@ describe("project-list item actions", () => {
     const actions = list.selectList.itemActions();
     const byCommand = new Map(actions.map((action) => [action.command, action]));
 
-    const swap = byCommand.get("project-list:swap");
-    expect(swap.name).toBe("Swap");
-    expect(swap.description).toBe("Open the project in a new window and close the current one");
-    expect(swap.keystrokes).toEqual(["alt-enter"]);
+    const here = byCommand.get("project-list:open-in-this-window");
+    expect(here.name).toBe("Open In This Window");
+    expect(here.description).toBe(
+      "Open the project here, restoring the editors it was last left with",
+    );
+    expect(here.keystrokes).toEqual(["alt-enter"]);
 
-    expect(byCommand.get("project-list:append").keystrokes).toEqual(["shift-enter"]);
+    expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);
 
     // Every action explains itself with more than a restated title.
@@ -51,13 +53,44 @@ describe("project-list item actions", () => {
 
     const spy = spyOn(list, "performAction");
     const index = list.selectList.itemActionsList.items.findIndex(
-      (item) => item.command === "project-list:append",
+      (item) => item.command === "project-list:add-to-project",
     );
     list.selectList.itemActionsList.selectIndex(index);
     list.selectList.itemActionsList.confirmSelection();
 
-    expect(spy).toHaveBeenCalledWith("append");
+    expect(spy).toHaveBeenCalledWith("add-to-project");
     expect(list.selectList.isVisible()).toBeTruthy();
     expect(list.selectList.itemActionsList.isVisible()).toBeFalsy();
+  });
+
+  describe("opening in this window", () => {
+    beforeEach(() => {
+      spyOn(atom.project, "setState");
+      spyOn(atom, "open");
+      spyOn(atom, "close");
+      spyOn(list.selectList, "getSelectedItem").and.callFake(() => list.selectedItem);
+    });
+
+    it("hands the paths to the project rather than opening a window", () => {
+      list.selectedItem = { title: "Plain", paths: [__dirname] };
+
+      list.performAction("open-in-this-window");
+
+      expect(atom.project.setState).toHaveBeenCalledWith([__dirname]);
+      expect(atom.open).not.toHaveBeenCalled();
+      expect(atom.close).not.toHaveBeenCalled();
+    });
+
+    // Development and safe mode belong to the window, so they cannot change in
+    // place — such a project still needs a window of its own.
+    it("falls back to a new window for a project that asks for dev mode", () => {
+      list.selectedItem = { title: "Dev", paths: [__dirname], devMode: true };
+
+      list.performAction("open-in-this-window");
+
+      expect(atom.project.setState).not.toHaveBeenCalled();
+      expect(atom.open).toHaveBeenCalled();
+      expect(atom.open.calls.mostRecent().args[0].newWindow).toBe(true);
+    });
   });
 });
