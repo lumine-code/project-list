@@ -67,7 +67,7 @@ describe("project-list item actions", () => {
     beforeEach(() => {
       spyOn(atom.project, "setState");
       spyOn(atom, "open");
-      spyOn(atom, "close");
+      spyOn(atom.window, "close");
       spyOn(list.selectList, "getSelectedItem").and.callFake(() => list.selectedItem);
     });
 
@@ -78,7 +78,7 @@ describe("project-list item actions", () => {
 
       expect(atom.project.setState).toHaveBeenCalledWith([__dirname]);
       expect(atom.open).not.toHaveBeenCalled();
-      expect(atom.close).not.toHaveBeenCalled();
+      expect(atom.window.close).not.toHaveBeenCalled();
     });
 
     // Development and safe mode belong to the window, so they cannot change in
