@@ -66,7 +66,7 @@ describe("project-list item actions", () => {
   describe("opening in this window", () => {
     beforeEach(() => {
       spyOn(atom.project, "setState");
-      spyOn(atom, "open");
+      spyOn(atom.app, "openWindow");
       spyOn(atom.window, "close");
       spyOn(list.selectList, "getSelectedItem").and.callFake(() => list.selectedItem);
     });
@@ -77,7 +77,7 @@ describe("project-list item actions", () => {
       list.performAction("open-in-this-window");
 
       expect(atom.project.setState).toHaveBeenCalledWith([__dirname]);
-      expect(atom.open).not.toHaveBeenCalled();
+      expect(atom.app.openWindow).not.toHaveBeenCalled();
       expect(atom.window.close).not.toHaveBeenCalled();
     });
 
@@ -89,8 +89,8 @@ describe("project-list item actions", () => {
       list.performAction("open-in-this-window");
 
       expect(atom.project.setState).not.toHaveBeenCalled();
-      expect(atom.open).toHaveBeenCalled();
-      expect(atom.open.calls.mostRecent().args[0].newWindow).toBe(true);
+      expect(atom.app.openWindow).toHaveBeenCalled();
+      expect(atom.app.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
     });
   });
 });
