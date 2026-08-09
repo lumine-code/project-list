@@ -1,11 +1,11 @@
 {
   // `alt-p` reveals the list. Bare alt-<letter> is the tier for revealing a
   // surface, one letter per surface, keyed to the package's own initial.
-  "atom-workspace": {
+  "lumine-workspace": {
     "alt-p": "project-list:toggle",
     "alt-shift-p": "project-list:edit"
   },
-  ".project-list atom-text-editor[mini]": {
+  ".project-list lumine-text-editor[mini]": {
     "alt-enter": "project-list:open-in-this-window",
     "shift-enter": "project-list:add-to-project",
     "alt-v": "project-list:insert-paths",

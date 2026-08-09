@@ -17,7 +17,7 @@ To install `project-list` search for _project-list_ in the Install pane of the L
 
 ## Commands
 
-Commands available in `atom-workspace`:
+Commands available in `lumine-workspace`:
 
 - `project-list:toggle`: toggle the project list,
 - `project-list:update`: rebuild the project list,

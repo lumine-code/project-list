@@ -15,7 +15,7 @@ describe("project-list glob path expansion", () => {
 
   beforeEach(async () => {
     dir = buildFixture();
-    const pack = await atom.packages.activatePackage("project-list");
+    const pack = await lumine.packages.activatePackage("project-list");
     projectList = pack.mainModule.projectList;
   });
 

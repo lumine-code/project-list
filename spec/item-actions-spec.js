@@ -2,15 +2,15 @@ describe("project-list item actions", () => {
   let main, list;
 
   beforeEach(async () => {
-    jasmine.attachToDOM(atom.views.getView(atom.workspace));
+    jasmine.attachToDOM(lumine.views.getView(lumine.workspace));
     // No activation commands here, so a plain activation resolves; it also
     // loads the package keymap the actions list reads.
-    main = (await atom.packages.activatePackage("project-list")).mainModule;
+    main = (await lumine.packages.activatePackage("project-list")).mainModule;
     list = main.projectList;
   });
 
   afterEach(async () => {
-    await atom.packages.deactivatePackage("project-list");
+    await lumine.packages.deactivatePackage("project-list");
   });
 
   it("derives its actions from the command registrations and the keymap", () => {
@@ -46,7 +46,7 @@ describe("project-list item actions", () => {
     await list.selectList.showItemActions();
 
     expect(list.selectList.itemActionsList.isVisible()).toBeTruthy();
-    expect(atom.workspace.getModalTrail()).toEqual(["Projects", "Actions"]);
+    expect(lumine.workspace.getModalTrail()).toEqual(["Projects", "Actions"]);
     // The actions list wears the package class, so the package keymap
     // resolves action keystrokes inside it too.
     expect(list.selectList.itemActionsList.element.classList.contains("project-list")).toBe(true);
@@ -65,9 +65,9 @@ describe("project-list item actions", () => {
 
   describe("opening in this window", () => {
     beforeEach(() => {
-      spyOn(atom.project, "setState");
-      spyOn(atom.app, "openWindow");
-      spyOn(atom.window, "close");
+      spyOn(lumine.project, "setState");
+      spyOn(lumine.app, "openWindow");
+      spyOn(lumine.window, "close");
       spyOn(list.selectList, "getSelectedItem").and.callFake(() => list.selectedItem);
     });
 
@@ -76,9 +76,9 @@ describe("project-list item actions", () => {
 
       list.performAction("open-in-this-window");
 
-      expect(atom.project.setState).toHaveBeenCalledWith([__dirname]);
-      expect(atom.app.openWindow).not.toHaveBeenCalled();
-      expect(atom.window.close).not.toHaveBeenCalled();
+      expect(lumine.project.setState).toHaveBeenCalledWith([__dirname]);
+      expect(lumine.app.openWindow).not.toHaveBeenCalled();
+      expect(lumine.window.close).not.toHaveBeenCalled();
     });
 
     // Development and safe mode belong to the window, so they cannot change in
@@ -88,9 +88,9 @@ describe("project-list item actions", () => {
 
       list.performAction("open-in-this-window");
 
-      expect(atom.project.setState).not.toHaveBeenCalled();
-      expect(atom.app.openWindow).toHaveBeenCalled();
-      expect(atom.app.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
+      expect(lumine.project.setState).not.toHaveBeenCalled();
+      expect(lumine.app.openWindow).toHaveBeenCalled();
+      expect(lumine.app.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
     });
   });
 });

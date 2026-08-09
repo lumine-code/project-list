@@ -46,7 +46,7 @@ There is no method for opening the list. A consumer that wants to offer that as 
 ## Minimal example
 
 ```js
-const { CompositeDisposable, Disposable } = require("atom");
+const { CompositeDisposable, Disposable } = require("lumine");
 
 module.exports = {
   consumeProjectList(projectList) {
