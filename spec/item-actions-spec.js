@@ -66,7 +66,7 @@ describe("project-list item actions", () => {
   describe("opening in this window", () => {
     beforeEach(() => {
       spyOn(lumine.project, "setState");
-      spyOn(lumine.app, "openWindow");
+      spyOn(lumine.application, "openWindow");
       spyOn(lumine.window, "close");
       spyOn(list.selectList, "getSelectedItem").and.callFake(() => list.selectedItem);
     });
@@ -77,7 +77,7 @@ describe("project-list item actions", () => {
       list.performAction("open-in-this-window");
 
       expect(lumine.project.setState).toHaveBeenCalledWith([__dirname]);
-      expect(lumine.app.openWindow).not.toHaveBeenCalled();
+      expect(lumine.application.openWindow).not.toHaveBeenCalled();
       expect(lumine.window.close).not.toHaveBeenCalled();
     });
 
@@ -89,8 +89,8 @@ describe("project-list item actions", () => {
       list.performAction("open-in-this-window");
 
       expect(lumine.project.setState).not.toHaveBeenCalled();
-      expect(lumine.app.openWindow).toHaveBeenCalled();
-      expect(lumine.app.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
+      expect(lumine.application.openWindow).toHaveBeenCalled();
+      expect(lumine.application.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
     });
   });
 });
