@@ -37,6 +37,13 @@
     "format:check": "prettier --check ."
   },
   "configSchema": {
+    "recentCount": {
+      "title": "Number of Recent Projects",
+      "description": "How many recently opened projects to keep at the top of the list.",
+      "type": "integer",
+      "minimum": 0,
+      "default": 10
+    },
     "useCache": {
       "title": "Use cached data",
       "description": "Dump the project list to a cache file. Useful if scanning is used.",

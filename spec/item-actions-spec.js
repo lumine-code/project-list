@@ -27,6 +27,11 @@ describe("project-list item actions", () => {
     expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);
 
+    // Rebuilding the list is about the list; everything else acts on the
+    // project the selection is on.
+    expect(byCommand.get("project-list:refresh").scope).toBe("list");
+    expect(here.scope).toBe("item");
+
     // Every action explains itself with more than a restated title.
     for (const action of actions) {
       expect(action.description).toBeTruthy();
