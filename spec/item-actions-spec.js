@@ -20,7 +20,7 @@ describe("project-list item actions", () => {
     const here = byCommand.get("project-list:open-in-this-window");
     expect(here.name).toBe("Open In This Window");
     expect(here.description).toBe(
-      "Open the project here, restoring the editors it was last left with",
+      "Open the project here, restoring the editors it was last left with.",
     );
     expect(here.keystrokes).toEqual(["alt-enter"]);
 
