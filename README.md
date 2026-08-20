@@ -9,7 +9,7 @@ Quick access and switching between projects.
 - **Glob paths**: wildcard patterns in `paths` expand to all matching directories at load time.
 - **Tags support**: organize and filter projects by tags; a `#tag` query targets tags explicitly.
 - **Multiple open modes**: open in a new window, open here restoring the project's own editors, or add to the current window.
-- **Recently opened first**: keeps the projects you opened at the top of the unfiltered list, ruled off from the rest.
+- **Recently used first**: keeps the projects you acted on at the top of the unfiltered list, ruled off from the rest.
 - **Performance cache**: the built list is cached and kept in sync across windows.
 
 ## Installation
@@ -23,7 +23,7 @@ Commands available in `lumine-workspace`:
 - `project-list:toggle`: toggle the project list,
 - `project-list:update`: rebuild the project list,
 - `project-list:edit`: open the configuration file,
-- `project-list:clear-recent`: forget the recently opened projects.
+- `project-list:clear-recent`: forget the recently used projects.
 
 Commands available in `.project-list`, all listed with their keybindings in the item-actions list (F12):
 

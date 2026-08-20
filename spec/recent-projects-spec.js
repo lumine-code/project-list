@@ -24,6 +24,7 @@ describe("project-list recent projects", () => {
   });
 
   afterEach(async () => {
+    list.setOpenExternalService(null);
     await lumine.packages.deactivatePackage("project-list");
   });
 
@@ -51,18 +52,32 @@ describe("project-list recent projects", () => {
     expect(list.selectList.items[0].title).toBe("Beta");
   });
 
-  it("records a project only when the action actually opens it", () => {
+  it("records the project for every action over it, not only an open", () => {
     spyOn(lumine.application, "openWindow");
-    spyOn(lumine.clipboard, "write");
     spyOn(list.selectList, "getSelectedItem").and.returnValue(seeded("Alpha"));
     spyOn(list, "prepareData").and.returnValue({ pathsToOpen: [__dirname] });
+    list.setOpenExternalService({
+      openExternal: jasmine.createSpy("openExternal"),
+      showInFolder: jasmine.createSpy("showInFolder"),
+    });
 
     list.performAction("show-in-folder");
-    expect(list.recentlyUsed).toEqual([]);
+    expect(list.openExternalService.showInFolder).toHaveBeenCalledWith(__dirname);
+    expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Alpha"))]);
 
+    list.clearRecent();
     list.performAction("open-in-new-window");
     expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Alpha"))]);
     expect(main.serialize()).toEqual({ recentlyUsed: list.recentlyUsed });
+  });
+
+  it("records nothing when the project resolves to no paths at all", () => {
+    spyOn(list.selectList, "getSelectedItem").and.returnValue(seeded("Alpha"));
+    spyOn(list, "prepareData").and.returnValue({ pathsToOpen: [] });
+
+    list.performAction("open-in-new-window");
+
+    expect(list.recentlyUsed).toEqual([]);
   });
 
   it("stands the section down under a query", async () => {

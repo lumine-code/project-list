@@ -39,7 +39,7 @@
   "configSchema": {
     "recentCount": {
       "title": "Number of Recent Projects",
-      "description": "How many recently opened projects to keep at the top of the list.",
+      "description": "How many recently used projects to keep at the top of the list.",
       "type": "integer",
       "minimum": 0,
       "default": 10
