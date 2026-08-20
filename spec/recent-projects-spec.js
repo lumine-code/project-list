@@ -80,6 +80,36 @@ describe("project-list recent projects", () => {
     expect(list.recentlyUsed).toEqual([]);
   });
 
+  it("drops one project from the section without closing the list", async () => {
+    list.recordRecent(seeded("Beta"));
+    list.recordRecent(seeded("Gamma"));
+    list.selectList.show();
+    await list.selectList.update({});
+    await list.selectList.selectItem(seeded("Gamma"));
+
+    lumine.commands.dispatch(list.selectList.element, "project-list:remove-from-recent");
+    await list.selectList.update({});
+
+    expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Beta"))]);
+    expect(list.selectList.isVisible()).toBe(true);
+    expect(list.selectList.getSelectedItem().title).toBe("Gamma");
+  });
+
+  it("offers the action only while a recent project is selected", async () => {
+    list.recordRecent(seeded("Gamma"));
+    list.selectList.show();
+    await list.selectList.update({});
+
+    await list.selectList.selectItem(seeded("Gamma"));
+    let actions = list.selectList.itemActions().map((action) => action.command);
+    expect(actions).toContain("project-list:remove-from-recent");
+
+    await list.selectList.selectItem(seeded("Alpha"));
+    actions = list.selectList.itemActions().map((action) => action.command);
+    expect(actions).not.toContain("project-list:remove-from-recent");
+    expect(actions).toContain("project-list:open-in-new-window");
+  });
+
   it("stands the section down under a query", async () => {
     list.recordRecent(seeded("Gamma"));
     list.selectList.show();
