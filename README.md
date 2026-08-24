@@ -80,7 +80,7 @@ Tweak the appearance of the list by adding CSS to your `styles.css`:
 
 ```css
 .project-list .tag {
-  color: var(--text-color-info);
+  color: var(--accent-only-text-color);
 }
 
 .project-list .list-group {
