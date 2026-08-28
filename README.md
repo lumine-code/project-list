@@ -25,7 +25,7 @@ Commands available in `lumine-workspace`:
 - `project-list:edit`: open the configuration file,
 - `project-list:clear-recent`: forget the recently used projects.
 
-Commands available in `.project-list`, all listed with their keybindings in the item-actions list (F12):
+Commands available in `.project-list`:
 
 - `project-list:open-in-new-window`: open the selected project in a new window,
 - `project-list:open-in-this-window`: open the selected project here, restoring the editors it was last left with,
