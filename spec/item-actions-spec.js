@@ -14,6 +14,10 @@ describe("project-list item actions", () => {
   });
 
   it("derives its actions from the command registrations and the keymap", () => {
+    spyOn(list.selectList, "getSelectedItem").and.returnValue({
+      title: "Selected",
+      paths: [__dirname],
+    });
     const actions = list.selectList.itemActions();
     const byCommand = new Map(actions.map((action) => [action.command, action]));
 
@@ -26,6 +30,8 @@ describe("project-list item actions", () => {
 
     expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);
+    expect(byCommand.get("project-list:open-in-new-window").keystrokes).toEqual(["enter"]);
+    expect(byCommand.get("project-list:edit").scope).toBe("list");
 
     // Rebuilding the list is about the list; everything else acts on the
     // project the selection is on.
@@ -45,7 +51,35 @@ describe("project-list item actions", () => {
     expect(byCommand.has("project-list:update")).toBe(false);
   });
 
+  it("offers recent-history actions only while that history exists", () => {
+    spyOn(list.selectList, "getSelectedItem").and.returnValue(null);
+    const hasClear = () =>
+      list.selectList.itemActions().some(({ command }) => command === "project-list:clear-recent");
+
+    expect(hasClear()).toBe(false);
+    list.recentlyUsed = ["Selected\n" + __dirname];
+    expect(hasClear()).toBe(true);
+    expect(
+      list.selectList.itemActions().find(({ command }) => command === "project-list:clear-recent")
+        .scope,
+    ).toBe("list");
+  });
+
+  it("hides the picker before opening its configuration", () => {
+    spyOn(lumine.workspace, "open").and.returnValue(Promise.resolve());
+    list.selectList.show();
+
+    list.editConfig();
+
+    expect(list.selectList.isVisible()).toBe(false);
+    expect(lumine.workspace.open).toHaveBeenCalledWith(list.getConfigPath());
+  });
+
   it("shows the actions as a flow step and runs one against the master list", async () => {
+    spyOn(list.selectList, "getSelectedItem").and.returnValue({
+      title: "Selected",
+      paths: [__dirname],
+    });
     list.selectList.show();
 
     await list.selectList.showItemActions();
