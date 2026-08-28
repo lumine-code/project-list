@@ -66,12 +66,12 @@ describe("project-list item actions", () => {
   });
 
   it("hides the picker before opening its configuration", () => {
+    const hide = spyOn(list.selectList, "hide");
     spyOn(lumine.workspace, "open").and.returnValue(Promise.resolve());
-    list.selectList.show();
 
     list.editConfig();
 
-    expect(list.selectList.isVisible()).toBe(false);
+    expect(hide).toHaveBeenCalled();
     expect(lumine.workspace.open).toHaveBeenCalledWith(list.getConfigPath());
   });
 
