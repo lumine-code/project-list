@@ -1,7 +1,8 @@
 const path = require("path");
+const { Icon } = require("lumine");
 
 describe("project-list recent projects", () => {
-  let main, list, workspaceElement;
+  let main, list, workspaceElement, iconRegistration;
 
   const alpha = { title: "Alpha", paths: [path.join(__dirname, "alpha") + path.sep] };
   const beta = { title: "Beta", paths: [path.join(__dirname, "beta") + path.sep] };
@@ -24,6 +25,7 @@ describe("project-list recent projects", () => {
   });
 
   afterEach(async () => {
+    iconRegistration?.dispose();
     list.setOpenExternalService(null);
     await lumine.packages.deactivatePackage("project-list");
   });
@@ -31,6 +33,24 @@ describe("project-list recent projects", () => {
   function seeded(title) {
     return list.items.find((item) => item.title === title);
   }
+
+  it("routes project paths through the shared icon registry", () => {
+    const line = list.selectList.element.querySelector(".secondary-line");
+    expect(line).toHaveClass("icon-file-directory");
+
+    iconRegistration = lumine.icons.addProvider(
+      {
+        id: "project-list-spec",
+        handles: ["path"],
+        usesContext: true,
+        iconFor(target) {
+          return target.context === "project-list" ? Icon.classes(["icon-flame"]) : null;
+        },
+      },
+      { priority: 100 },
+    );
+    expect(line).toHaveClass("icon-flame");
+  });
 
   it("keeps the projects it opened at the top, ruled off from the rest", async () => {
     list.recordRecent(seeded("Gamma"));
