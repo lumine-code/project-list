@@ -133,7 +133,7 @@ describe("project-list recent projects", () => {
   it("stands the section down under a query", async () => {
     list.recordRecent(seeded("Gamma"));
     list.selectList.show();
-    list.selectList.refs.queryEditor.setText("alpha");
+    list.selectList.getQueryEditor().setText("alpha");
     await lumine.views.getNextUpdatePromise();
 
     expect(list.selectList.element.querySelector(".select-list-separator")).toBeNull();
