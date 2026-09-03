@@ -35,8 +35,9 @@ Commands available in `.project-list`:
 - `project-list:open-in-safe-mode`: open the selected project in a new window in safe mode,
 - `project-list:open-external`: open the project folders externally (via open-external),
 - `project-list:show-in-folder`: show the project folders in the system file manager (via open-external),
-- `project-list:refresh`: rebuild the project list, skipping the cache,
-- `project-list:remove-from-recent`: drop the selected project from the recent section, offered only while a recent one is selected.
+- `project-list:refresh`: rebuild the project list, skipping the cache.
+
+The shared actions picker also offers its standard recent-item commands while the list has recent projects: remove the selected project from the recent section or clear the section completely.
 
 Opening in this window keeps the same renderer, so packages, themes and grammars stay loaded. The current project's editors are saved before the new project's are restored, unsaved changes included, so returning to a project finds it as you left it. Only the workspace center changes — a tree view, a terminal or any other dock keeps running. A project configured for `devMode` or `safeMode` still opens a window of its own, since neither can change in place.
 

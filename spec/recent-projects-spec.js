@@ -15,13 +15,13 @@ describe("project-list recent projects", () => {
 
     main = (await lumine.packages.activatePackage("project-list")).mainModule;
     list = main.projectList;
-    list.clearRecent();
+    await list.clearRecent();
 
     // The list is normally built from the user's projects file; the specs
     // seed it directly rather than writing one.
     list.restart = false;
     list.items = [alpha, beta, gamma].map((item) => ({ ...item, text: item.title }));
-    await list.selectList.update({ items: list.items, recentIds: list.recentlyUsed });
+    await list.selectList.setItems(list.items);
   });
 
   afterEach(async () => {
@@ -35,7 +35,7 @@ describe("project-list recent projects", () => {
   }
 
   it("routes project paths through the shared icon registry", () => {
-    const line = list.selectList.element.querySelector(".secondary-line");
+    const line = list.selectList.getElement().querySelector(".secondary-line");
     expect(line).toHaveClass("icon-file-directory");
 
     iconRegistration = lumine.icons.addProvider(
@@ -53,62 +53,59 @@ describe("project-list recent projects", () => {
   });
 
   it("keeps the projects it opened at the top, ruled off from the rest", async () => {
-    list.recordRecent(seeded("Gamma"));
-    await list.selectList.update({});
+    await list.selectList.recordRecentItem(seeded("Gamma"));
 
-    expect(list.selectList.items[0].title).toBe("Gamma");
-    const separator = list.selectList.element.querySelector(".select-list-separator");
+    expect(list.selectList.getFilteredItems()[0].title).toBe("Gamma");
+    const separator = list.selectList.getElement().querySelector(".select-list-separator");
     expect(separator.previousElementSibling.textContent).toContain("Gamma");
     expect(separator.nextElementSibling.textContent).not.toContain("Gamma");
   });
 
   it("identifies a project by its title and paths, so a rebuilt copy still matches", async () => {
-    list.recordRecent(seeded("Beta"));
+    await list.selectList.recordRecentItem(seeded("Beta"));
 
     // A rescan produces equal-but-not-identical objects.
     list.items = [alpha, beta, gamma].map((item) => ({ ...item, text: item.title }));
-    await list.selectList.update({ items: list.items, recentIds: list.recentlyUsed });
+    await list.selectList.setItems(list.items);
 
-    expect(list.selectList.items[0].title).toBe("Beta");
+    expect(list.selectList.getFilteredItems()[0].title).toBe("Beta");
   });
 
-  it("records the project for every action over it, not only an open", () => {
+  it("records the project for every successful item action, not only an open", async () => {
     spyOn(lumine.application, "openWindow");
-    spyOn(list.selectList, "getSelectedItem").and.returnValue(seeded("Alpha"));
     spyOn(list, "prepareData").and.returnValue({ pathsToOpen: [__dirname] });
     list.setOpenExternalService({
       openExternal: jasmine.createSpy("openExternal"),
       showInFolder: jasmine.createSpy("showInFolder"),
     });
 
-    list.performAction("show-in-folder");
+    await list.selectList.selectItem(seeded("Alpha"));
+    await list.selectList.runAction("project-list:show-in-folder");
     expect(list.openExternalService.showInFolder).toHaveBeenCalledWith(__dirname);
     expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Alpha"))]);
 
-    list.clearRecent();
-    list.performAction("open-in-new-window");
+    await list.clearRecent();
+    await list.selectList.runAction("project-list:open-in-new-window");
     expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Alpha"))]);
     expect(main.serialize()).toEqual({ recentlyUsed: list.recentlyUsed });
   });
 
-  it("records nothing when the project resolves to no paths at all", () => {
-    spyOn(list.selectList, "getSelectedItem").and.returnValue(seeded("Alpha"));
+  it("records nothing when the project resolves to no paths at all", async () => {
     spyOn(list, "prepareData").and.returnValue({ pathsToOpen: [] });
 
-    list.performAction("open-in-new-window");
+    await list.selectList.selectItem(seeded("Alpha"));
+    await list.selectList.runAction("project-list:open-in-new-window");
 
     expect(list.recentlyUsed).toEqual([]);
   });
 
   it("drops one project from the section without closing the list", async () => {
-    list.recordRecent(seeded("Beta"));
-    list.recordRecent(seeded("Gamma"));
+    await list.selectList.recordRecentItem(seeded("Beta"));
+    await list.selectList.recordRecentItem(seeded("Gamma"));
     list.selectList.show();
-    await list.selectList.update({});
     await list.selectList.selectItem(seeded("Gamma"));
 
-    lumine.commands.dispatch(list.selectList.element, "project-list:remove-from-recent");
-    await list.selectList.update({});
+    await list.selectList.runAction("select-list:remove-recent");
 
     expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Beta"))]);
     expect(list.selectList.isVisible()).toBe(true);
@@ -116,34 +113,33 @@ describe("project-list recent projects", () => {
   });
 
   it("offers the action only while a recent project is selected", async () => {
-    list.recordRecent(seeded("Gamma"));
+    await list.selectList.recordRecentItem(seeded("Gamma"));
     list.selectList.show();
-    await list.selectList.update({});
 
     await list.selectList.selectItem(seeded("Gamma"));
-    let actions = list.selectList.itemActions().map((action) => action.command);
-    expect(actions).toContain("project-list:remove-from-recent");
+    let actions = list.selectList.getAvailableActions().map((action) => action.command);
+    expect(actions).toContain("select-list:remove-recent");
 
     await list.selectList.selectItem(seeded("Alpha"));
-    actions = list.selectList.itemActions().map((action) => action.command);
-    expect(actions).not.toContain("project-list:remove-from-recent");
+    actions = list.selectList.getAvailableActions().map((action) => action.command);
+    expect(actions).not.toContain("select-list:remove-recent");
     expect(actions).toContain("project-list:open-in-new-window");
   });
 
   it("stands the section down under a query", async () => {
-    list.recordRecent(seeded("Gamma"));
+    await list.selectList.recordRecentItem(seeded("Gamma"));
     list.selectList.show();
     list.selectList.getQueryEditor().setText("alpha");
     await lumine.views.getNextUpdatePromise();
 
-    expect(list.selectList.element.querySelector(".select-list-separator")).toBeNull();
+    expect(list.selectList.getElement().querySelector(".select-list-separator")).toBeNull();
   });
 
-  it("caps the list at the configured count", () => {
+  it("caps the list at the configured count", async () => {
     lumine.config.set("project-list.recentCount", 2);
-    list.recordRecent(seeded("Alpha"));
-    list.recordRecent(seeded("Beta"));
-    list.recordRecent(seeded("Gamma"));
+    await list.selectList.recordRecentItem(seeded("Alpha"));
+    await list.selectList.recordRecentItem(seeded("Beta"));
+    await list.selectList.recordRecentItem(seeded("Gamma"));
 
     expect(list.recentlyUsed).toEqual([
       list.projectKey(seeded("Gamma")),
@@ -152,13 +148,11 @@ describe("project-list recent projects", () => {
   });
 
   it("forgets everything on clear-recent", async () => {
-    list.recordRecent(seeded("Gamma"));
-    await list.selectList.update({});
+    await list.selectList.recordRecentItem(seeded("Gamma"));
 
-    lumine.commands.dispatch(workspaceElement, "project-list:clear-recent");
-    await list.selectList.update({});
+    await lumine.commands.dispatch(workspaceElement, "project-list:clear-recent");
 
     expect(list.recentlyUsed).toEqual([]);
-    expect(list.selectList.element.querySelector(".select-list-separator")).toBeNull();
+    expect(list.selectList.getElement().querySelector(".select-list-separator")).toBeNull();
   });
 });
