@@ -102,19 +102,19 @@ describe("project-list recent projects", () => {
   it("drops one project from the section without closing the list", async () => {
     await list.selectList.recordRecentItem(seeded("Beta"));
     await list.selectList.recordRecentItem(seeded("Gamma"));
-    list.selectList.show();
+    list.selectListHost.show();
     await list.selectList.selectItem(seeded("Gamma"));
 
     await list.selectList.runAction("select-list:remove-recent");
 
     expect(list.recentlyUsed).toEqual([list.projectKey(seeded("Beta"))]);
-    expect(list.selectList.isVisible()).toBe(true);
+    expect(list.selectListHost.isVisible()).toBe(true);
     expect(list.selectList.getSelectedItem().title).toBe("Gamma");
   });
 
   it("offers the action only while a recent project is selected", async () => {
     await list.selectList.recordRecentItem(seeded("Gamma"));
-    list.selectList.show();
+    list.selectListHost.show();
 
     await list.selectList.selectItem(seeded("Gamma"));
     let actions = list.selectList.getAvailableActions().map((action) => action.command);
@@ -128,7 +128,7 @@ describe("project-list recent projects", () => {
 
   it("stands the section down under a query", async () => {
     await list.selectList.recordRecentItem(seeded("Gamma"));
-    list.selectList.show();
+    list.selectListHost.show();
     list.selectList.getQueryEditor().setText("alpha");
     await lumine.views.getNextUpdatePromise();
 

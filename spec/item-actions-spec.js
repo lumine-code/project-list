@@ -14,6 +14,7 @@ describe("project-list item actions", () => {
   });
 
   it("describes its declared actions through the command registry and keymap", async () => {
+    list.selectListHost.getPanel();
     const item = {
       title: "Selected",
       paths: [__dirname],
@@ -72,7 +73,7 @@ describe("project-list item actions", () => {
   });
 
   it("hides the picker before opening its configuration", () => {
-    const hide = spyOn(list.selectList, "hide");
+    const hide = spyOn(list.selectListHost, "hide");
     spyOn(lumine.workspace, "open").and.returnValue(Promise.resolve());
 
     list.editConfig();
@@ -90,9 +91,9 @@ describe("project-list item actions", () => {
     list.restart = false;
     list.items = [item];
     await list.selectList.setItems([item]);
-    list.selectList.show();
+    list.selectListHost.show();
 
-    expect(await list.selectList.showActions()).toBe(true);
+    expect(await list.selectListHost.showActions()).toBe(true);
 
     expect(lumine.workspace.getModalTrail()).toEqual(["Projects", "Actions"]);
     expect(lumine.workspace.popModal()).toBe(true);
@@ -101,7 +102,7 @@ describe("project-list item actions", () => {
     await list.selectList.runAction("project-list:add-to-project");
 
     expect(spy).toHaveBeenCalledWith(item, "add-to-project");
-    expect(list.selectList.isVisible()).toBeFalse();
+    expect(list.selectListHost.isVisible()).toBeFalse();
   });
 
   describe("opening in this window", () => {
