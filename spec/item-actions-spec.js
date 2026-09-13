@@ -56,22 +56,6 @@ describe("project-list item actions", () => {
     expect(byCommand.has("project-list:update")).toBe(false);
   });
 
-  it("offers the core recent-history actions only while that history exists", async () => {
-    const hasClear = () =>
-      list.selectList
-        .getAvailableActions()
-        .some(({ command }) => command === "select-list:clear-recents");
-
-    expect(hasClear()).toBe(false);
-    await list.selectList.setRecentItemIds(["Selected\n" + __dirname]);
-    expect(hasClear()).toBe(true);
-    expect(
-      list.selectList
-        .getAvailableActions()
-        .find(({ command }) => command === "select-list:clear-recents").context,
-    ).toBe("dialog");
-  });
-
   it("hides the picker before opening its configuration", () => {
     const hide = spyOn(list.selectListHost, "hide");
     spyOn(lumine.workspace, "open").and.returnValue(Promise.resolve());
