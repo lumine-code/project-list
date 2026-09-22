@@ -9,6 +9,7 @@
     "alt-enter": "project-list:open-in-this-window",
     "shift-enter": "project-list:add-to-project",
     "alt-v": "project-list:insert-paths",
+    "alt-c": "project-list:copy-paths",
     "alt-d": "project-list:open-in-dev-mode",
     "alt-s": "project-list:open-in-safe-mode",
     "alt-f12": "project-list:open-external",

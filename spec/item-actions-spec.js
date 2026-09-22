@@ -1,3 +1,5 @@
+const path = require("path");
+
 describe("project-list item actions", () => {
   let main, list;
 
@@ -34,6 +36,7 @@ describe("project-list item actions", () => {
     expect(here.keystrokes).toEqual(["alt-enter"]);
 
     expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
+    expect(byCommand.get("project-list:copy-paths").keystrokes).toEqual(["alt-c"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);
     expect(byCommand.get("project-list:open-in-new-window").keystrokes).toEqual(["enter"]);
     expect(byCommand.get("project-list:edit").context).toBe("dialog");
@@ -117,5 +120,16 @@ describe("project-list item actions", () => {
       expect(lumine.application.openWindow).toHaveBeenCalled();
       expect(lumine.application.openWindow.calls.mostRecent().args[0].newWindow).toBe(true);
     });
+  });
+
+  it("copies the selected project's paths", () => {
+    spyOn(lumine.clipboard, "write");
+    list.selectedItem = { title: "Selected", paths: [__dirname, path.join(__dirname, "..")] };
+
+    list.performAction(list.selectedItem, "copy-paths");
+
+    expect(lumine.clipboard.write).toHaveBeenCalledWith(
+      [__dirname, path.join(__dirname, "..")].join("\n"),
+    );
   });
 });
