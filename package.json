@@ -27,9 +27,6 @@
   "engines": {
     "lumine": "^1.0.0"
   },
-  "backgroundTips": [
-    "You can switch to another project with {{ 'project-list:toggle' | keystroke }}"
-  ],
   "scripts": {
     "test": "lumine --test spec",
     "lint": "eslint . --max-warnings 0",
@@ -61,6 +58,11 @@
       "description": "Provides access to the project list manager",
       "versions": {
         "1.0.0": "provideProjectList"
+      }
+    },
+    "background-tips.provider": {
+      "versions": {
+        "1.0.0": "provideBackgroundTips"
       }
     }
   },
