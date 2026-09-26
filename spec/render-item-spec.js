@@ -8,6 +8,7 @@ describe("project-list item rendering", () => {
     jasmine.attachToDOM(lumine.views.getView(lumine.workspace));
     const main = (await lumine.packages.activatePackage("project-list")).mainModule;
     list = main.projectList;
+    list.ensureSelectList();
 
     const item = {
       title: "Alpha",

@@ -9,6 +9,7 @@ describe("project-list item actions", () => {
     // loads the package keymap the actions list reads.
     main = (await lumine.packages.activatePackage("project-list")).mainModule;
     list = main.projectList;
+    list.ensureSelectList();
   });
 
   afterEach(async () => {
