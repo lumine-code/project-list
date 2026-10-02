@@ -35,7 +35,7 @@ Commands available in `.project-list`:
 - `project-list:show-in-folder`: show the project folders in the system file manager (via open-external),
 - `project-list:refresh`: rebuild the project list, skipping the cache.
 
-Opening in this window keeps the same renderer, so packages, themes and grammars stay loaded. The current project's editors are saved before the new project's are restored, unsaved changes included, so returning to a project finds it as you left it. Only the workspace center changes — a tree view, a terminal or any other dock keeps running. A project configured for `devMode` or `safeMode` still opens a window of its own, since neither can change in place.
+Opening in this window keeps the same renderer, so packages, themes and grammars stay loaded. The current project's editors are saved before the new project's are restored, unsaved changes included, so returning to a project finds it as you left it. Only the workspace center changes — a tree view, a terminal or any other dock keeps running. Every configured folder must be available before switching; an incomplete project leaves the current session alone. Each window keeps its own project sessions and can adopt another window's saved session only while that project is closed there. A project configured for `devMode` or `safeMode` opens a new window if that mode is not already active, leaving the source window open.
 
 ## Configuration
 
