@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const temp = require("@lumine-code/temp").track();
+const temp = require("@lumine-code/fs-temp").track();
 
 function buildFixture() {
   const dir = fs.realpathSync.native(temp.mkdirSync("project-list-glob-"));
