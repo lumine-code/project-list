@@ -4,7 +4,7 @@
   padding: 0.2em 0.4em;
   border-radius: 6px;
   vertical-align: baseline;
-  color: var(--syntax-color-constant);
+  color: var(--ui-site-color-3);
 }
 
 .project-list .square {
