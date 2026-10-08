@@ -11,7 +11,8 @@ describe("Project metadata CSS roles", () => {
       const list = document.createElement("div");
       list.className = "project-list";
       list.style.backgroundColor = "white";
-      list.style.setProperty("--text-color-subtle", "rgb(40, 50, 60)");
+      list.style.setProperty("--ui-site-color-3", "rgb(40, 50, 60)");
+      list.style.setProperty("--text-color-subtle", "rgb(80, 90, 100)");
       list.style.setProperty("--syntax-color-constant", "rgb(255, 255, 255)");
       list.innerHTML = '<span class="tag">Work</span>';
       jasmine.attachToDOM(list);
