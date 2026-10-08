@@ -20,7 +20,6 @@ To install `project-list` search for it in the Install pane of the Lumine settin
 Commands available in `lumine-workspace`:
 
 - `project-list:toggle`: toggle the project list,
-- `project-list:update`: rebuild the project list,
 - `project-list:edit`: open the configuration file.
 
 Commands available in `.project-list`:

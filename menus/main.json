@@ -11,10 +11,6 @@
               "command": "project-list:toggle"
             },
             {
-              "label": "Update",
-              "command": "project-list:update"
-            },
-            {
               "label": "Edit",
               "command": "project-list:edit"
             }

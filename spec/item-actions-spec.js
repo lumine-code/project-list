@@ -18,6 +18,26 @@ describe("project-list item actions", () => {
     await lumine.packages.deactivatePackage("project-list");
   });
 
+  it("keeps rebuilding local and available without a selected project", async () => {
+    list.selectListHost.getPanel();
+    list.selectList.selectNone();
+    const refresh = list.selectList
+      .getAvailableActions()
+      .find(({ command }) => command === "project-list:refresh");
+
+    expect(refresh.context).toBe("dialog");
+    expect(refresh.keystrokes).toEqual(["f5"]);
+    const commands = lumine.commands
+      .findCommands({ target: lumine.views.getView(lumine.workspace) })
+      .map(({ name }) => name);
+    expect(commands).not.toContain("project-list:update");
+    expect(commands).not.toContain("project-list:refresh");
+
+    const rebuild = spyOn(list, "updateView").and.resolveTo();
+    await list.selectList.runAction("project-list:refresh");
+    expect(rebuild).toHaveBeenCalledOnceWith(false);
+  });
+
   it("describes its declared actions through the command registry and keymap", async () => {
     list.selectListHost.getPanel();
     const item = {
@@ -54,8 +74,7 @@ describe("project-list item actions", () => {
       expect(action.description).toBeTruthy();
     }
 
-    // Chrome and global commands stay out — including the workspace-level
-    // update, which is why the in-list rebuild is named refresh.
+    // Chrome and global commands stay out.
     expect(byCommand.has("core:confirm")).toBe(false);
     expect(byCommand.has("select-list:actions")).toBe(false);
     expect(byCommand.has("project-list:toggle")).toBe(false);
