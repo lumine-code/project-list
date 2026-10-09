@@ -52,19 +52,19 @@ Projects are defined in `projects.json` in the Lumine config directory — open 
 
 Example `projects.json`:
 
-```jsonc
+```json
 [
   {
     "title": "My Library",
     "paths": ["C:/Work/library/"],
     "tags": ["work"],
-    "scan": true,
+    "scan": true
   },
   {
     "title": "Packages",
     "paths": ["C:/Work/packages/*"],
-    "tags": ["work"],
-  },
+    "tags": ["work"]
+  }
 ]
 ```
 
