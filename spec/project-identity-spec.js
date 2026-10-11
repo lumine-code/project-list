@@ -123,10 +123,15 @@ describe("project-list structural and root identity", () => {
       expect(list.findCurrentProject()).toBe(item);
     });
   } else {
-    it("preserves distinct existing POSIX roots that differ in case", () => {
+    it("preserves distinct existing POSIX roots on the host filesystem", () => {
       const lower = path.join(directory, "case");
-      const upper = path.join(directory, "CASE");
       fs.mkdirSync(lower);
+      // Default macOS volumes alias case-only spellings. Keep two actual
+      // directories there, while retaining the case-only control on Linux.
+      const upper = path.join(
+        directory,
+        fs.existsSync(path.join(directory, "CASE")) ? "CASE-distinct" : "CASE",
+      );
       fs.mkdirSync(upper);
       const item = list.prepareItem({ title: "Uppercase", paths: [upper] });
       list.items = [item];
