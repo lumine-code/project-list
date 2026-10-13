@@ -5,7 +5,9 @@
       "submenu": [
         {
           "label": "Open Project…",
-          "command": "project-list:toggle"
+          "command": "project-list:toggle",
+          "group": "projects",
+          "order": 30
         }
       ]
     },
