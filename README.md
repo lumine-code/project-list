@@ -11,6 +11,8 @@ Quick access and switching between projects.
 - **Multiple open modes**: open in a new window, open here restoring the project's own editors, or add to the current window.
 - **Performance cache**: the built list is cached and kept in sync across windows.
 
+![Choose a named project from the configured project list.](.github/demo.png)
+
 ## Installation
 
 To install `project-list` search for it in the Install pane of the Lumine settings, or run the command `lumine --install lumine-code/project-list`.
