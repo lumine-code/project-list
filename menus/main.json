@@ -1,6 +1,15 @@
 {
   "menu": [
     {
+      "label": "File",
+      "submenu": [
+        {
+          "label": "Open Project…",
+          "command": "project-list:toggle"
+        }
+      ]
+    },
+    {
       "label": "Packages",
       "submenu": [
         {
