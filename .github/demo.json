@@ -2,9 +2,10 @@
   "title": "project-list",
   "description": "Choose a named project from the configured project list.",
   "recordedOn": "2026-10-13",
-  "sourceRevision": "b12701ee160c00a19a4c3a6253a101c878fcc415",
+  "sourceRevision": "c9f50f20e46ae4213a074a325edb8f6015283126",
   "mode": "normal",
   "fontSettings": "default",
+  "themeSourceRevision": "6564a9e21899b5541e9c8f8006f9be6d6d72e6ad",
   "images": [
     {
       "file": "demo.png",
