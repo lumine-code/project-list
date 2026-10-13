@@ -137,6 +137,31 @@ describe("project-list asynchronous load ownership", () => {
     expect(list.items.some((item) => item.title.includes("outdated"))).toBe(false);
   });
 
+  it("shares a modal scan while retaining the second caller after the first closes", async () => {
+    const firstController = new AbortController();
+    const secondController = new AbortController();
+    const first = list.loadProjects({
+      loadCache: false,
+      signal: firstController.signal,
+      shared: true,
+    });
+    await conditionPromise(() => tasks.length === 1);
+    const operation = list.activeOperation;
+    const second = list.loadProjects({
+      loadCache: false,
+      signal: secondController.signal,
+      shared: true,
+    });
+    expect(list.activeOperation).toBe(operation);
+    firstController.abort();
+    expect(await first).toBeUndefined();
+    expect(operation.controller.signal.aborted).toBe(false);
+    tasks[0].deliver(["shared-folder"]);
+    const result = await second;
+    expect(result.items.some((item) => item.title === "shared-folder")).toBe(true);
+    expect(tasks.length).toBe(1);
+  });
+
   it("abandons a source load when its caller aborts without writing a cache", async () => {
     const controller = new AbortController();
     const pending = list.loadProjects({
