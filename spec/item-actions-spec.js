@@ -56,7 +56,7 @@ describe("project-list item actions", () => {
     expect(here.description).toBe(
       "Open the project here, restoring the editors it was last left with.",
     );
-    expect(here.keystrokes).toEqual([]);
+    expect(here.keystrokes).toEqual(["ctrl-enter"]);
 
     expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
     expect(byCommand.get("project-list:open-with").keystrokes).toEqual(["alt-enter"]);
