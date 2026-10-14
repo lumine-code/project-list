@@ -237,32 +237,28 @@ describe("project-list standard opening gestures", () => {
     expect(host.isVisible()).toBe(true);
   });
 
-  for (const ctrlKey of [false, true])
-    it(
-      "uses " + (ctrlKey ? "Ctrl-Shift-click" : "Shift-click") + " only to select the clicked row",
-      async () => {
-        const actions = jasmine.createSpy("finished action");
-        const lease = model.onDidFinishAction(actions);
-        const event = new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          button: 0,
-          shiftKey: true,
-          ctrlKey,
-        });
-        targetRow(items[1]).querySelector(".primary-line").dispatchEvent(event);
-        await flushMicrotasks();
-        lease.dispose();
-        expect(model.getItemId(model.getSelectedItem())).toBe(model.getItemId(items[1]));
-        expect(event.defaultPrevented).toBe(true);
-        expect(actions).not.toHaveBeenCalled();
-        expect(host.isVisible()).toBe(true);
-        expect(lumine.application.openWindow).not.toHaveBeenCalled();
-        expect(open).not.toHaveBeenCalled();
-        expect(external.openExternal).not.toHaveBeenCalled();
-        expect(external.showInFolder).not.toHaveBeenCalled();
-      },
-    );
+  it("uses Ctrl-Shift-click only to select the clicked row", async () => {
+    const actions = jasmine.createSpy("finished action");
+    const lease = model.onDidFinishAction(actions);
+    const event = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+      button: 0,
+      shiftKey: true,
+      ctrlKey: true,
+    });
+    targetRow(items[1]).querySelector(".primary-line").dispatchEvent(event);
+    await flushMicrotasks();
+    lease.dispose();
+    expect(model.getItemId(model.getSelectedItem())).toBe(model.getItemId(items[1]));
+    expect(event.defaultPrevented).toBe(true);
+    expect(actions).not.toHaveBeenCalled();
+    expect(host.isVisible()).toBe(true);
+    expect(lumine.application.openWindow).not.toHaveBeenCalled();
+    expect(open).not.toHaveBeenCalled();
+    expect(external.openExternal).not.toHaveBeenCalled();
+    expect(external.showInFolder).not.toHaveBeenCalled();
+  });
 
   it("restores Add to Project without Open Pending or the obsolete reveal alias", async () => {
     const input = model.getQueryEditor().getElement();
@@ -281,18 +277,16 @@ describe("project-list standard opening gestures", () => {
     ).toBe(false);
 
     const previousPaths = lumine.project.getPaths();
-    await model.selectItem(items[1]);
+    await model.selectItem(items[0]);
     try {
       const finished = nextAction();
-      const event = new KeyboardEvent("keydown", {
-        key: "Enter",
-        code: "Enter",
+      const event = new MouseEvent("click", {
+        button: 0,
         shiftKey: true,
         bubbles: true,
         cancelable: true,
       });
-      Object.defineProperty(event, "target", { value: model.getQueryEditor().getElement() });
-      lumine.keymaps.handleKeyboardEvent(event);
+      targetRow(items[1]).querySelector(".primary-line").dispatchEvent(event);
       const result = await finished;
       expect(result.status).toBe("success");
       expect(result.command).toBe("project-list:add-to-project");
