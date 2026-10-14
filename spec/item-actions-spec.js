@@ -56,9 +56,10 @@ describe("project-list item actions", () => {
     expect(here.description).toBe(
       "Open the project here, restoring the editors it was last left with.",
     );
-    expect(here.keystrokes).toEqual(["alt-enter"]);
+    expect(here.keystrokes).toEqual([]);
 
-    expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
+    expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual([]);
+    expect(byCommand.get("project-list:open-with").keystrokes).toEqual(["alt-enter"]);
     expect(byCommand.get("project-list:copy-paths").keystrokes).toEqual(["alt-c"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);
     expect(byCommand.get("project-list:open-in-new-window").keystrokes).toEqual(["enter"]);
@@ -170,12 +171,14 @@ describe("project-list item actions", () => {
       expect(list.selectListHost.isVisible()).toBeFalse();
     });
 
-    it("dispatches alt-enter from the picker's mini editor", async () => {
+    it("dispatches alt-enter to Open With from the picker's mini editor", async () => {
       const item = { title: "Plain", text: "Plain", paths: [__dirname] };
       list.restart = false;
       list.items = [item];
       await list.selectList.setItems([item]);
       list.selectListHost.show();
+      const choose = jasmine.createSpy("choose opener");
+      const command = lumine.commands.add("lumine-workspace", "open-with:toggle", choose);
       const event = new KeyboardEvent("keydown", {
         key: "Enter",
         code: "Enter",
@@ -189,8 +192,10 @@ describe("project-list item actions", () => {
 
       lumine.keymaps.handleKeyboardEvent(event);
 
-      await conditionPromise(() => lumine.project.setState.calls.count() === 1);
-      expect(lumine.project.setState).toHaveBeenCalledWith([__dirname]);
+      await conditionPromise(() => choose.calls.count() === 1);
+      command.dispose();
+      expect(choose.calls.mostRecent().args[0].detail.project.paths).toEqual([__dirname]);
+      expect(lumine.project.setState).not.toHaveBeenCalled();
       expect(lumine.application.openWindow).not.toHaveBeenCalled();
     });
 
