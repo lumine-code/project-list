@@ -3,7 +3,16 @@ module.exports = {
   version: 1,
   dependencies: ["language-javascript", "tree-view"],
   viewport: { width: 1200, height: 760 },
-  async before() {},
+  async before({ profile, fixture }) {
+    const projects = [
+      { title: "Signal Lab", paths: [fixture("Signal Lab")], tags: ["experiments"] },
+      { title: "Sample Data", paths: [fixture("Signal Lab/data")], tags: ["data"] },
+    ];
+    require("node:fs").writeFileSync(
+      require("node:path").join(profile, "projects.json"),
+      JSON.stringify(projects),
+    );
+  },
   async prepare(context) {
     const { lumine, state, fixture, open } = context;
     state.editor = await open("Signal Lab/src/signal.js");
