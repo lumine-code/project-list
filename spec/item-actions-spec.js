@@ -58,7 +58,7 @@ describe("project-list item actions", () => {
     );
     expect(here.keystrokes).toEqual([]);
 
-    expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual([]);
+    expect(byCommand.get("project-list:add-to-project").keystrokes).toEqual(["shift-enter"]);
     expect(byCommand.get("project-list:open-with").keystrokes).toEqual(["alt-enter"]);
     expect(byCommand.get("project-list:copy-paths").keystrokes).toEqual(["alt-c"]);
     expect(byCommand.get("project-list:refresh").keystrokes).toEqual(["f5"]);

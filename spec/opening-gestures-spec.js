@@ -229,19 +229,45 @@ describe("project-list standard opening gestures", () => {
       },
     );
 
-  it("exposes no Open Pending command or obsolete Enter alias", () => {
+  it("restores Add to Project without Open Pending or the obsolete reveal alias", async () => {
     const input = model.getQueryEditor().getElement();
     expect(
       lumine.commands
         .findCommands({ target: input })
         .some(({ name }) => name === "project-list:open-pending"),
     ).toBe(false);
-    for (const keystrokes of ["shift-enter", "ctrl-shift-enter"]) {
-      expect(
-        lumine.keymaps
-          .findKeyBindings({ target: input, keystrokes })
-          .some((binding) => binding.command.startsWith("project-list:")),
-      ).toBe(false);
+    expect(
+      lumine.keymaps.findKeyBindings({ target: input, keystrokes: "shift-enter" })[0]?.command,
+    ).toBe("project-list:add-to-project");
+    expect(
+      lumine.keymaps
+        .findKeyBindings({ target: input, keystrokes: "ctrl-shift-enter" })
+        .some((binding) => binding.command.startsWith("project-list:")),
+    ).toBe(false);
+
+    const previousPaths = lumine.project.getPaths();
+    await model.selectItem(items[1]);
+    try {
+      const finished = nextAction();
+      const event = new KeyboardEvent("keydown", {
+        key: "Enter",
+        code: "Enter",
+        shiftKey: true,
+        bubbles: true,
+        cancelable: true,
+      });
+      Object.defineProperty(event, "target", { value: model.getQueryEditor().getElement() });
+      lumine.keymaps.handleKeyboardEvent(event);
+      const result = await finished;
+      expect(result.status).toBe("success");
+      expect(result.command).toBe("project-list:add-to-project");
+      for (const directory of [betaPath, extraPath])
+        expect(lumine.project.getPaths()).toContain(directory);
+      expect(host.isVisible()).toBe(false);
+      expect(lumine.application.openWindow).not.toHaveBeenCalled();
+    } finally {
+      lumine.project.setPaths(previousPaths);
+      await lumine.fileWatchClient.settlePendingTeardown();
     }
   });
 });

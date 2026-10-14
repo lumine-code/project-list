@@ -7,6 +7,7 @@
   },
   ".project-list lumine-text-editor[mini]": {
     "alt-enter": "project-list:open-with",
+    "shift-enter": "project-list:add-to-project",
     "alt-v": "project-list:insert-paths",
     "alt-c": "project-list:copy-paths",
     "alt-d": "project-list:open-in-dev-mode",
