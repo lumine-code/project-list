@@ -2,8 +2,8 @@
   "title": "project-list",
   "description": "Choose a named project from the configured project list.",
   "recordedOn": "2026-10-14",
-  "sourceRevision": "54276f4cef913a1bd02e7946b35da68193737953",
-  "themeSourceRevision": "7fbd047a87ecf1367c896b19ff270cdc28d319f7",
+  "sourceRevision": "c53e2eebc7bc0db59da097004f425e937789ce9d",
+  "themeSourceRevision": "a673daf5882dc988419316d144a9bbe0aec9cb53",
   "mode": "normal",
   "fontSettings": "default",
   "scenario": "demo.js",
@@ -11,8 +11,8 @@
   "environment": {
     "platform": "win32",
     "arch": "x64",
-    "electron": "44.7.0",
-    "chrome": "152.0.7977.130",
+    "electron": "44.7.1",
+    "chrome": "152.0.7977.149",
     "devicePixelRatio": 1,
     "locale": "en-GB",
     "fontFamily": "Fira Code, Menlo, DejaVu Sans Mono, Consolas, monospace",
@@ -21,34 +21,35 @@
   },
   "viewport": { "width": 1200, "height": 760 },
   "cornerRadius": 10,
+  "privacy": { "version": 1, "location": "neutral", "textChecked": true },
   "sources": {
     "editor": {
-      "revision": "d0b1751fffac65f10a405545e5f01cf7ad05c0bb",
+      "revision": "b3fcd05714f72e3aa88498c47334a04de2c51afa",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "package": {
-      "revision": "54276f4cef913a1bd02e7946b35da68193737953",
+      "revision": "c53e2eebc7bc0db59da097004f425e937789ce9d",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "project-list": {
-      "revision": "54276f4cef913a1bd02e7946b35da68193737953",
+      "revision": "c53e2eebc7bc0db59da097004f425e937789ce9d",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "language-javascript": {
-      "revision": "ae2e6968e3a349fb4d09ce53e339a0f8cce903aa",
+      "revision": "7c60e9b041c23a0426c11a3e939883f8198cf528",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "one-theme": {
-      "revision": "7fbd047a87ecf1367c896b19ff270cdc28d319f7",
+      "revision": "a673daf5882dc988419316d144a9bbe0aec9cb53",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     },
     "tree-view": {
-      "revision": "fe6f35de06f036837aa9c2d3b138b3d72557bcc4",
+      "revision": "aaa932b9f685f7514a5015d3b54079c45057475d",
       "dirty": false,
       "workingTreeHash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
     }
@@ -81,7 +82,7 @@
       "label": "Choose a named project from the configured project list.",
       "width": 1200,
       "height": 760,
-      "sha256": "3d089a3a56db42acbd3f36f6c7d015115ad150d5b9ddd30d7856b177ae45248e"
+      "sha256": "f32a2d3a8f93873f66810221d1c88a47071f3f8ef6f19105160db244b7531ec4"
     }
   ]
 }
