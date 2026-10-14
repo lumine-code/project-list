@@ -7,13 +7,12 @@
   },
   ".project-list lumine-text-editor[mini]": {
     "alt-enter": "project-list:open-with",
-    "shift-enter": "project-list:open-pending",
     "alt-v": "project-list:insert-paths",
     "alt-c": "project-list:copy-paths",
     "alt-d": "project-list:open-in-dev-mode",
     "alt-s": "project-list:open-in-safe-mode",
     "ctrl-alt-enter": "project-list:open-external",
-    "ctrl-shift-enter": "project-list:show-in-folder",
+    "alt-shift-enter": "project-list:show-in-folder",
     "f5": "project-list:refresh"
   }
 }

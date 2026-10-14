@@ -144,8 +144,8 @@ describe("project-list standard opening gestures", () => {
     expect(lumine.application.openWindow).not.toHaveBeenCalled();
   });
 
-  it("Ctrl-Shift-clicks only the reveal action for the clicked item", async () => {
-    const result = await click(items[1], { ctrlKey: true, shiftKey: true });
+  it("Alt-Shift-clicks only the reveal action for the clicked item", async () => {
+    const result = await click(items[1], { altKey: true, shiftKey: true });
     expect(result.command).toBe("project-list:show-in-folder");
     expect(result.status).toBe("success");
     expect(external.showInFolder.calls.allArgs()).toEqual([[betaPath], [extraPath]]);
@@ -182,34 +182,66 @@ describe("project-list standard opening gestures", () => {
     expect(external.openExternal).not.toHaveBeenCalled();
   });
 
-  it("resolves the standard opener, pending and system-action keys locally", () => {
+  it("resolves the standard opener and system-action keys locally", () => {
     const input = model.getQueryEditor().getElement();
     for (const [keystrokes, command] of [
       ["alt-enter", "project-list:open-with"],
-      ["shift-enter", "project-list:open-pending"],
       ["ctrl-alt-enter", "project-list:open-external"],
-      ["ctrl-shift-enter", "project-list:show-in-folder"],
+      ["alt-shift-enter", "project-list:show-in-folder"],
     ])
       expect(lumine.keymaps.findKeyBindings({ target: input, keystrokes })[0]?.command).toBe(
         command,
       );
   });
 
-  it("keeps pending text unavailable for a project without falling through to opening it", async () => {
-    const result = await click(items[1], { shiftKey: true });
-    expect(result.status).toBe("unavailable");
-    expect(result.command).toBe("project-list:open-pending");
-    expect(host.isVisible()).toBe(true);
-    expect(open).not.toHaveBeenCalled();
-    expect(lumine.application.openWindow).not.toHaveBeenCalled();
-    expect(external.openExternal).not.toHaveBeenCalled();
-  });
-
   it("reports a failed system action in the native picker", async () => {
     external.showInFolder.and.rejectWith(new Error("System action failed"));
-    const result = await click(items[1], { ctrlKey: true, shiftKey: true });
+    const result = await click(items[1], { altKey: true, shiftKey: true });
     expect(result.status).toBe("error");
     expect(model.getStatus()).toEqual({ type: "error", message: "System action failed" });
     expect(host.isVisible()).toBe(true);
+  });
+
+  for (const ctrlKey of [false, true])
+    it(
+      "uses " + (ctrlKey ? "Ctrl-Shift-click" : "Shift-click") + " only to select the clicked row",
+      async () => {
+        const actions = jasmine.createSpy("finished action");
+        const lease = model.onDidFinishAction(actions);
+        const event = new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+          button: 0,
+          shiftKey: true,
+          ctrlKey,
+        });
+        targetRow(items[1]).querySelector(".primary-line").dispatchEvent(event);
+        await flushMicrotasks();
+        lease.dispose();
+        expect(model.getItemId(model.getSelectedItem())).toBe(model.getItemId(items[1]));
+        expect(event.defaultPrevented).toBe(true);
+        expect(actions).not.toHaveBeenCalled();
+        expect(host.isVisible()).toBe(true);
+        expect(lumine.application.openWindow).not.toHaveBeenCalled();
+        expect(open).not.toHaveBeenCalled();
+        expect(external.openExternal).not.toHaveBeenCalled();
+        expect(external.showInFolder).not.toHaveBeenCalled();
+      },
+    );
+
+  it("exposes no Open Pending command or obsolete Enter alias", () => {
+    const input = model.getQueryEditor().getElement();
+    expect(
+      lumine.commands
+        .findCommands({ target: input })
+        .some(({ name }) => name === "project-list:open-pending"),
+    ).toBe(false);
+    for (const keystrokes of ["shift-enter", "ctrl-shift-enter"]) {
+      expect(
+        lumine.keymaps
+          .findKeyBindings({ target: input, keystrokes })
+          .some((binding) => binding.command.startsWith("project-list:")),
+      ).toBe(false);
+    }
   });
 });
