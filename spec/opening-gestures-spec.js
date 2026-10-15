@@ -4,6 +4,7 @@ const path = require("node:path");
 const { CompositeDisposable } = require("lumine");
 
 describe("project-list standard opening gestures", () => {
+  const primaryClick = process.platform === "darwin" ? { metaKey: true } : { ctrlKey: true };
   let owner, host, model, items, scratch, alphaPath, betaPath, extraPath, leases, external, open;
 
   beforeEach(async () => {
@@ -96,7 +97,7 @@ describe("project-list standard opening gestures", () => {
     return listener;
   }
 
-  it("keeps Alt-click choosing an opener and Ctrl-click opening the clicked project here", async () => {
+  it("keeps Alt-click choosing an opener and Cmd/Ctrl-click opening the clicked project here", async () => {
     const choose = chooser();
     const result = await click(items[1], { altKey: true });
     expect(result.status).toBe("success");
@@ -114,7 +115,7 @@ describe("project-list standard opening gestures", () => {
     const switching = spyOn(lumine.project, "setState").and.resolveTo(true);
     delete items[1].devMode;
     await model.selectItem(items[0]);
-    const current = await click(items[1], { ctrlKey: true });
+    const current = await click(items[1], primaryClick);
     expect(current.command).toBe("project-list:open-in-this-window");
     expect(current.status).toBe("success");
     expect(switching).toHaveBeenCalledOnceWith([betaPath, extraPath]);
