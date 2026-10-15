@@ -199,7 +199,10 @@ describe("project-list standard opening gestures", () => {
     const input = model.getQueryEditor().getElement();
     for (const [keystrokes, command] of [
       ["alt-enter", "project-list:open-with"],
-      ["ctrl-enter", "project-list:open-in-this-window"],
+      [
+        process.platform === "darwin" ? "cmd-enter" : "ctrl-enter",
+        "project-list:open-in-this-window",
+      ],
       ["ctrl-alt-enter", "project-list:open-external"],
       ["alt-shift-enter", "project-list:show-in-folder"],
     ])
@@ -214,7 +217,8 @@ describe("project-list standard opening gestures", () => {
     const event = new KeyboardEvent("keydown", {
       key: "Enter",
       code: "Enter",
-      ctrlKey: true,
+      ctrlKey: process.platform !== "darwin",
+      metaKey: process.platform === "darwin",
       bubbles: true,
       cancelable: true,
     });
