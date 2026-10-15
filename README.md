@@ -28,7 +28,7 @@ Commands available in `.project-list`:
 
 - `project-list:open-in-new-window`: open the selected project in a new window,
 - `project-list:open-in-this-window`: open the selected project here, restoring the editors it was last left with,
-- `project-list:open-with`: choose how and where to open the selected project,
+- `project-list:open`: choose how and where to open the selected project,
 - `project-list:add-to-project`: add the selected project's folders to the current window,
 - `project-list:insert-paths`: insert the project paths into the active text editor,
 - `project-list:open-in-dev-mode`: open the selected project in a new window in dev mode,

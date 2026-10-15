@@ -6,7 +6,7 @@
     "alt-shift-p": "project-list:edit"
   },
   ".project-list lumine-text-editor[mini]": {
-    "alt-enter": "project-list:open-with",
+    "alt-enter": "project-list:open",
     "cmdorctrl-enter": "project-list:open-in-this-window",
     "shift-enter": "project-list:add-to-project",
     "alt-v": "project-list:insert-paths",

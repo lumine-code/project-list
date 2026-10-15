@@ -2,7 +2,7 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 
-describe("project-list native Open With flow", () => {
+describe("project-list native Launcher flow", () => {
   let list, chooser, host, scratch, roots, item, previousPaths;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe("project-list native Open With flow", () => {
     roots = [path.join(scratch, "first"), path.join(scratch, "second")];
     for (const directory of roots) fs.mkdirSync(directory);
     item = { title: "Multi", text: "Multi", paths: roots };
-    chooser = (await lumine.packages.activatePackage("open-with")).mainModule;
+    chooser = (await lumine.packages.activatePackage("launcher")).mainModule;
     list = (await lumine.packages.activatePackage("project-list")).mainModule.projectList;
     list.items = [item];
     list.restart = false;
@@ -30,7 +30,7 @@ describe("project-list native Open With flow", () => {
   });
 
   afterEach(async () => {
-    await lumine.packages.deactivatePackage("open-with");
+    await lumine.packages.deactivatePackage("launcher");
     await lumine.packages.deactivatePackage("project-list");
     await host.destroy();
     lumine.project.setPaths(previousPaths);
@@ -47,14 +47,14 @@ describe("project-list native Open With flow", () => {
   });
 
   async function openChooser() {
-    const result = await host.getModel().runAction("project-list:open-with");
+    const result = await host.getModel().runAction("project-list:open");
     expect(result.status).toBe("success");
     const record = chooser.pickers.get(lumine.workspace.getMainWindow());
     expect(record.context.project.paths).toEqual(roots);
     expect(record.host.getModel().getSelectedItem().id).toBe("project-folder");
     expect(record.host.isVisible()).toBe(true);
     expect(host.isVisible()).toBe(false);
-    expect(lumine.workspace.getModalTrail()).toEqual(["Projects", "Open With"]);
+    expect(lumine.workspace.getModalTrail()).toEqual(["Projects", "Open"]);
     return record;
   }
 
@@ -67,7 +67,7 @@ describe("project-list native Open With flow", () => {
     const result = await child.getModel().confirmSelection();
 
     expect(result.status).toBe("success");
-    expect(result.command).toBe("open-with:new-window");
+    expect(result.command).toBe("launcher:open-new-window");
     expect(lumine.application.openWindow).toHaveBeenCalledOnceWith({
       pathsToOpen: roots,
       newWindow: true,
@@ -82,7 +82,7 @@ describe("project-list native Open With flow", () => {
 
   it("switches the current project to all roots through the child picker", async () => {
     const { host: child } = await openChooser();
-    const result = await child.getModel().runAction("open-with:this-window");
+    const result = await child.getModel().runAction("launcher:open-this-window");
 
     expect(result.status).toBe("success");
     expect(lumine.project.setState).toHaveBeenCalledOnceWith(roots);
