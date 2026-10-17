@@ -82,15 +82,20 @@ describe("project-list item actions", () => {
     expect(byCommand.has("project-list:update")).toBe(false);
   });
 
-  it("hides the picker before opening its configuration", () => {
-    const hide = spyOn(list.selectListHost, "hide");
-    spyOn(lumine.workspace, "open").and.returnValue(Promise.resolve());
+  for (const keepOpen of [false, true]) {
+    it(`opens configuration with keep-open mode ${keepOpen}`, async () => {
+      const open = spyOn(lumine.workspace, "open").and.resolveTo({});
+      list.restart = false;
+      list.items = [];
+      await list.selectListHost.show();
+      list.selectList.setKeepOpen(keepOpen);
 
-    list.editConfig();
+      await list.selectList.runAction("project-list:edit");
 
-    expect(hide).toHaveBeenCalled();
-    expect(lumine.workspace.open).toHaveBeenCalledWith(list.getConfigPath());
-  });
+      expect(open).toHaveBeenCalledOnceWith(list.getConfigPath());
+      expect(list.selectListHost.isVisible()).toBe(keepOpen);
+    });
+  }
 
   it("shows the centralized actions picker and runs an action on the model", async () => {
     const item = {
