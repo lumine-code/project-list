@@ -4,11 +4,21 @@
       "label": "File",
       "submenu": [
         {
-          "label": "Open Saved Project…",
-          "command": "project-list:toggle",
-          "group": "projects",
-          "order": 30
-        },
+          "label": "Projects",
+          "submenu": [
+            {
+              "label": "Saved Projects…",
+              "command": "project-list:toggle",
+              "group": "saved",
+              "order": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "App",
+      "submenu": [
         {
           "label": "Configuration Files",
           "submenu": [
