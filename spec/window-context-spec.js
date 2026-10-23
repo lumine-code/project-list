@@ -8,6 +8,34 @@ describe("project pickers in editor windows", () => {
     await lumine.packages.deactivatePackage("project-list");
     await lumine.workspace.discardEditorWindows();
   });
+  it("publishes a cache update to every window while preserving each query", async () => {
+    const list = lumine.packages.getActivePackage("project-list").mainModule.projectList;
+    const extra = await lumine.workspace.openEditorWindow({ show: false });
+    list.ensureSelectList(lumine.workspace.getMainWindow());
+    list.ensureSelectList(extra);
+    const local = list.windowLists.get(lumine.workspace.getMainWindow()).model;
+    const remote = list.windowLists.get(extra).model;
+    const old = [{ title: "Old", paths: [__dirname], tags: [], text: "Old" }];
+    await Promise.all([local.setItems(old), remote.setItems(old)]);
+    await Promise.all([local.setQuery("alpha"), remote.setQuery("beta")]);
+    const fresh = [
+      { title: "Alpha", paths: [__dirname + "/alpha"], tags: [], text: "Alpha" },
+      { title: "Beta", paths: [__dirname + "/beta"], tags: [], text: "Beta" },
+    ];
+    list.useCache = true;
+    spyOn(list, "loadCache").and.callFake(() => {
+      list.items = fresh;
+      return true;
+    });
+    await list.handleCacheUpdate("new-fingerprint");
+    // Also await the legacy detached main-window update when reproducing the bug.
+    await local.queryWork?.promise;
+    await remote.queryWork?.promise;
+    expect(local.getFilteredItems()).toEqual([fresh[0]]);
+    expect(remote.getFilteredItems()).toEqual([fresh[1]]);
+    expect(local.getQuery()).toBe("alpha");
+    expect(remote.getQuery()).toBe("beta");
+  });
   it("shares the index while preserving local queries and insertion targets", async () => {
     const workspace = lumine.workspace;
     const first = await workspace.open();
