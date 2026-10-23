@@ -182,6 +182,12 @@ describe("project-list standard opening gestures", () => {
     const choose = chooser();
     const retired = targetRow(items[1]);
     await model.setQuery("Alpha");
+    // A config refresh can supersede this query while its replacement is still
+    // filtering. Verify retirement itself before testing the detached row.
+    await conditionPromise(
+      () => !model.isFiltering() && !model.getElement().contains(retired),
+      "the filtered row to retire",
+    );
     const event = new MouseEvent("click", {
       bubbles: true,
       cancelable: true,
@@ -194,6 +200,69 @@ describe("project-list standard opening gestures", () => {
     expect(choose).not.toHaveBeenCalled();
     expect(open).not.toHaveBeenCalled();
     expect(external.openExternal).not.toHaveBeenCalled();
+  });
+
+  it("retires row listeners after a source refresh supersedes the pending query", async () => {
+    const choose = chooser();
+    const retired = targetRow(items[1]);
+    const matchInWorker = model.matchInWorker.bind(model);
+    const gates = [];
+    let holdMatching = true;
+    spyOn(model, "matchInWorker").and.callFake((...args) => {
+      if (!holdMatching) return matchInWorker(...args);
+      return new Promise((resolve, reject) => {
+        const signal = args[4];
+        const abort = () => reject(signal.reason);
+        const release = () => {
+          signal.removeEventListener("abort", abort);
+          if (!signal.aborted) matchInWorker(...args).then(resolve, reject);
+        };
+        gates.push({ signal, release });
+        if (signal.aborted) abort();
+        else signal.addEventListener("abort", abort, { once: true });
+      });
+    });
+    const releaseMatching = () => {
+      holdMatching = false;
+      for (const gate of gates.splice(0)) gate.release();
+    };
+    try {
+      const query = model.setQuery("Alpha");
+      await conditionPromise(() => gates.length > 0, "the initial query to reach its worker");
+      const refresh = owner.updateView(false);
+      await query;
+      await conditionPromise(
+        () => gates.some(({ signal }) => !signal.aborted),
+        "the replacement query to reach its worker",
+      );
+      expect(model.getQuery()).toBe("Alpha");
+      expect(model.isFiltering()).toBe(true);
+      expect(model.getElement().contains(retired)).toBe(true);
+
+      // Release every pending generation and allow any incidental config
+      // refresh to match normally, rather than assuming exactly two requests.
+      releaseMatching();
+      await refresh;
+      await conditionPromise(
+        () => !model.isFiltering() && !model.getElement().contains(retired),
+        "the replacement query to retire the filtered row",
+      );
+      const event = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        button: 0,
+        altKey: true,
+      });
+      retired.querySelector(".primary-line").dispatchEvent(event);
+      await flushMicrotasks();
+      expect(model.getDisplayedItems()).toEqual([items[0]]);
+      expect(event.defaultPrevented).toBe(false);
+      expect(choose).not.toHaveBeenCalled();
+      expect(open).not.toHaveBeenCalled();
+      expect(external.openExternal).not.toHaveBeenCalled();
+    } finally {
+      releaseMatching();
+    }
   });
 
   it("resolves opening keys and preserves a cancelled current-window request", async () => {
