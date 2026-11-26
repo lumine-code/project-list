@@ -262,7 +262,7 @@ describe("project-list item actions", () => {
       expect(lumine.application.openWindow).not.toHaveBeenCalled();
       expect(lumine.notifications.addError).toHaveBeenCalledWith(
         "Project directory is unavailable",
-        { detail: missing },
+        { detail: missing, detailCollapsed: false },
       );
     });
 
